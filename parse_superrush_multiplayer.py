@@ -1,18 +1,11 @@
 #!/usr/bin/env python
-from functools import partial
-from tkinter.constants import BOTTOM, LEFT, RIGHT, TOP
-try:
-    from PIL import Image
-except ImportError:
-    import Image
+from tkinter.constants import LEFT, TOP
 import time
 from cv2 import cv2
 import sys
-from datetime import datetime
 from scripts.utils.video_stream_helper import VideoStreamWidget
-from scripts.utils.event_logging import log_event, save_image
-from parse_scores import get_results_data, is_results_screen, is_hole_screen, get_hole_data
-from skimage import io
+from scripts.parsing.parse_score import get_results_data, is_results_screen
+from scripts.parsing.parse_hole import is_hole_screen, get_hole_data
 import queue
 from tkinter import Button, Frame, Radiobutton, Label, StringVar, IntVar, Tk
 import tkinter
@@ -26,47 +19,48 @@ class GuiPart:
         header = Label(master, text="Mario Golf Super Rush Parser", font=("Arial", 15))
         bot_frame = Frame(master, pady=20)
 
-        left_frame = Frame(bot_frame, padx=10)
-
-        # idk
-        vcam_label = Label(left_frame, text="Select Virtual Cam", font=("Arial", 10))
-        vcam_label.pack(side=TOP)
-        vcam_subtitle = Label(left_frame, text="(Default = 1)", font=("Arial", 10))
-        vcam_subtitle.pack(side=TOP)
-        vcam_var = IntVar()
-        vcam_var.set(1)
-
-        for i in range(5):
-            r1 = Radiobutton(left_frame, text=str(i+1), indicatoron=0, width=10, padx=10, variable=vcam_var, value=i+1, command=lambda: set_vcam_command(vcam_var.get()), anchor=tkinter.W)
-            r1.pack(side=TOP)
-        preview_button = Button(left_frame, text='Preview VCam', command=preview_vcam_command)
-        preview_button.pack(side=TOP)
-
         # Set up the GUI
-        right_frame = Frame(bot_frame, padx=10)
-        resolution_var = StringVar()
-        res_label = Label(right_frame, text="OBS Output Resolution", font=("Arial", 10))
-        
-        res_label.pack(side=TOP)
-        r1 = Radiobutton(right_frame, text="720p", indicatoron=0, width=10, padx=10, variable=resolution_var, value='720p', anchor=tkinter.W)
-        r1.pack(side=TOP)
-        r2 = Radiobutton(right_frame, text="1080p", indicatoron=0, width=10, padx=10, variable=resolution_var, value='1080p', anchor=tkinter.W)
-        r2.pack(side=TOP)
-        start_button = Button(right_frame, text='Start Parsing', command=lambda: start_parsing_command(resolution_var.get()))
-        start_button.pack(side=TOP)
-        done_button = Button(right_frame, text='Done Parsing', command=end_command)
-        done_button.pack(side=TOP)
-
+        left_frame = self.get_vcam_preview_frame(bot_frame, set_vcam_command, preview_vcam_command)
+        right_frame = self.get_parsing_frame(bot_frame, end_command, start_parsing_command)
         left_frame.pack(side=LEFT)
         right_frame.pack(side=LEFT)
 
         header.pack(side=TOP)
         bot_frame.pack(side=TOP)
 
+    def get_vcam_preview_frame(self, master, set_vcam_command, preview_vcam_command):
+        frame = Frame(master, padx=10)
 
+        # idk
+        vcam_label = Label(frame, text="Select Virtual Cam", font=("Arial", 10))
+        vcam_label.pack(side=TOP)
+        vcam_subtitle = Label(frame, text="(Default = 1)", font=("Arial", 10))
+        vcam_subtitle.pack(side=TOP)
+        vcam_var = IntVar()
+        vcam_var.set(1)
+
+        for i in range(5):
+            r1 = Radiobutton(frame, text=str(i+1), indicatoron=0, width=10, padx=10, variable=vcam_var, value=i+1, command=lambda: set_vcam_command(vcam_var.get()), anchor=tkinter.W)
+            r1.pack(side=TOP)
+        preview_button = Button(frame, text='Preview VCam', command=preview_vcam_command)
+        preview_button.pack(side=TOP)
+        return frame
+
+    def get_parsing_frame(self, master, end_command, start_parsing_command):
+        frame = Frame(master, padx=10)
+        resolution_var = StringVar()
+        res_label = Label(frame, text="OBS Output Resolution", font=("Arial", 10))
         
-        # console.pack()
-        # Add more GUI stuff here depending on your specific needs
+        res_label.pack(side=TOP)
+        r1 = Radiobutton(frame, text="720p", indicatoron=0, width=10, padx=10, variable=resolution_var, value='720p', anchor=tkinter.W)
+        r1.pack(side=TOP)
+        r2 = Radiobutton(frame, text="1080p", indicatoron=0, width=10, padx=10, variable=resolution_var, value='1080p', anchor=tkinter.W)
+        r2.pack(side=TOP)
+        start_button = Button(frame, text='Start Parsing', command=lambda: start_parsing_command(resolution_var.get()))
+        start_button.pack(side=TOP)
+        done_button = Button(frame, text='Done Parsing', command=end_command)
+        done_button.pack(side=TOP)
+        return frame
 
     def processIncoming(self):
         """Handle all messages currently in the queue, if any."""
@@ -205,7 +199,7 @@ class SuperRushScoreParser():
 
 
 root = Tk()
-root.title('MGSR Score Parser')
+root.title('MGSR Caddy')
 
 client = SuperRushScoreParser(root, virtual_cam=1)
 root.mainloop()
