@@ -37,3 +37,10 @@ coverage.xml
 
 # Translations
 *.mo
+
+token.json
+credentials.json
+
+mgsr-events/
+*.spec
+*.ico
