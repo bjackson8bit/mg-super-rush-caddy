@@ -255,7 +255,8 @@ class SuperRushScoreParser():
             data = [[result_to_string(val), 'F'] for val in self.last_known_score]
             self.output_conn.write_rows(data)
         self.running = False
-        self.stream.finish()
+        if self.stream is not None:
+            self.stream.finish()
         sys.exit(0)
 
     def start_parsing(self, resolution):
