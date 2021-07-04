@@ -78,7 +78,7 @@ def get_player_data_from_results(i, img):
 
     clean_sign = crop_and_clean_img(img, sign_x_center_2digit, sign_y_center, sign_side_len)
     sign, score = find_most_similar(clean_sign, minus_plus_spritesheet)
-    print(f"{i} {sign} {score}")
+    # print(f"{i} {sign} {score}")
     # 2 digit score
     if score > sign_match_thresh:
         digit_x_center_init = 1465
