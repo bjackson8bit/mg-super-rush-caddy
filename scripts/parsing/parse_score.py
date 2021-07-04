@@ -67,7 +67,7 @@ def get_player_data_from_results(i, img):
     sign_match_thresh = 0.75
     sign_y_center_init = 365
     sign_y_center = sign_y_center_init + i * player_y_spacing
-    sign_x_center_2digit = 1409
+    sign_x_center_2digit = 1408
     sign_x_center_1digit = 1439
     sign_side_len = 46
 
