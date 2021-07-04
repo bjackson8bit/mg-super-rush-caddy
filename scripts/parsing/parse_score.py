@@ -32,7 +32,7 @@ def result_to_string(res):
     if res > 0:
         return f"+{str(res)}"
     elif res == 0:
-        return "+/-0"
+        return "E"
     else:
         return str(res)
 
@@ -78,6 +78,7 @@ def get_player_data_from_results(i, img):
 
     clean_sign = crop_and_clean_img(img, sign_x_center_2digit, sign_y_center, sign_side_len)
     sign, score = find_most_similar(clean_sign, minus_plus_spritesheet)
+    # print(f"{i} {sign} {score}")
     # 2 digit score
     if score > sign_match_thresh:
         digit_x_center_init = 1465
@@ -112,6 +113,8 @@ def get_player_data_from_results(i, img):
         digit_x_center_init = 1495
         clean_sign = crop_and_clean_img(img, sign_x_center_1digit, sign_y_center, sign_side_len)
         sign, score = find_most_similar(clean_sign, minus_plus_spritesheet)
+        # print(f"{i} {sign} {score}")
+
         if score < sign_match_thresh:
             print(f"Unable to recognize sign (+,-,+/-) of player {i+1}'s score")
             return None

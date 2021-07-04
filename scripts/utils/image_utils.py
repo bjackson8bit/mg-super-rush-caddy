@@ -9,7 +9,7 @@ def np_binarize(img):
     Returns:
         A binary image with all pixels having either 0 or 1 value
     """
-    thresh = 0.9
+    thresh = 0.95
     return 1.0 * (img > thresh)
 
 
