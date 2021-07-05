@@ -44,3 +44,4 @@ credentials.json
 mgsr-events/
 *.spec
 *.ico
+*.iss

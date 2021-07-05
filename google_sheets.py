@@ -12,7 +12,7 @@ import os
 from six import viewvalues
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/drive.file']
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 def create_sheet(sheet_name, creds_filename):
